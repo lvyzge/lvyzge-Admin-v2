@@ -1,0 +1,5 @@
+-- lvyzge Admin does not ship a remote loadstring bootstrap.
+--
+-- Install the reviewed project files directly in the authorized environment.
+-- GodNDS must be installed from roblox/GodNDS/ServerScriptService so its
+-- authorization and damage decisions execute on the server.

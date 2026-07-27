@@ -1,0 +1,67 @@
+local __lt = (function()
+	local globalEnv = (getgenv and getgenv()) or _G or {};
+	local sharedEnv = rawget(_G, "shared");
+	local cacheHost = type(sharedEnv) == "table" and sharedEnv or (type(globalEnv) == "table" and globalEnv or nil);
+	if cacheHost then
+		local cached = rawget(cacheHost, "__lt_service_resolver");
+		if type(cached) == "table" then
+			return cached;
+		end;
+	end;
+	local loader = loadstring or load;
+	if type(loader) ~= "function" then
+		error("Service resolver loader unavailable");
+	end;
+	local resolver = loader(game:HttpGet("https://ltseverydayyou.github.io/ServiceResolver.luau"), "@ServiceResolver.luau");
+	if type(resolver) ~= "function" then
+		error("Service resolver failed to compile");
+	end;
+	local loaded = resolver();
+	if type(loaded) ~= "table" then
+		error("Service resolver failed to load");
+	end;
+	if cacheHost then
+		cacheHost.__lt_service_resolver = loaded;
+	end;
+	return loaded;
+end)();
+
+local function ClonedService(name)
+	local Service = function(_, serviceName) return __lt.gs(serviceName); end;
+	local Reference = cloneref or function(reference)
+		return reference;
+	end;
+	return __lt.cs(name, Reference);
+end;
+local block = Instance.new("Part");
+local bp = Instance.new("BodyPosition");
+block.CFrame = CFrame.new(9000000000, 9000000000, 9000000000);
+block.Anchored = true;
+local player = (ClonedService("Players")).LocalPlayer;
+local character = player.Character;
+local savepos = (ClonedService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame;
+for i, v in player.Backpack:GetChildren() do
+	(ClonedService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame = block.CFrame;
+	v.Parent = Character;
+	bp.Parent = v.Handle;
+	bp.Position = block.Position;
+	v.Handle.Velocity = Vector3.new(25.7, 0, 0);
+	v.Handle.RotVelocity = Vector3.new(9000000000, 9000000000, 9000000000);
+	v.Parent = (ClonedService("Players")).LocalPlayer.Backpack;
+	wait(1);
+	v.Parent = character;
+	task.wait(0);
+	v.Parent = ClonedService("Workspace");
+end;
+character:ClearAllChildren();
+wait(7);
+for i, v in (ClonedService("Workspace")):QueryDescendants("Instance") do
+	if v:IsA("Tool") then
+		v.Handle.CanCollide = false;
+		bp:Destroy();
+		v.Handle.RotVelocity = Vector3.new(0, 0, 0);
+		(ClonedService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame = savepos;
+		v.Handle.CFrame = (ClonedService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame;
+		block:Destroy();
+	end;
+end;
